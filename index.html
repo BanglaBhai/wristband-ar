@@ -1,50 +1,36 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Wristband WebAR - Stable</title>
-    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Wristband WebAR</title>
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
     <script src="https://raw.githack.com/fcor/arjs-gestures/master/dist/gestures.js"></script>
     
     <style>
-      body { margin: 0; overflow: hidden; }
-      
-      /* CUSTOM INSTRUCTION TEXT STYLING */
-      #custom-instructions {
-        position: absolute;
-        bottom: 5%;
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 10;
-        background: rgba(0, 0, 0, 0.7);
-        color: white;
-        padding: 15px 25px;
-        border-radius: 30px;
-        font-family: 'Arial', sans-serif;
-        font-size: 14px;
-        text-align: center;
-        pointer-events: none; /* Allows clicks to pass through to the AR */
-        border: 1px solid rgba(255, 255, 255, 0.3);
+      #example-scanning-overlay {
+        display: flex; align-items: center; justify-content: center;
+        position: absolute; left: 0; right: 0; top: 0; bottom: 0;
+        background: rgba(0, 0, 0, 0.5); color: white; z-index: 2;
+        font-family: sans-serif;
       }
+      #example-scanning-overlay.hidden { display: none; }
     </style>
   </head>
 
   <body>
-    <div id="custom-instructions">
-      ✨ <b>Wristband Found!</b> ✨<br>
-      Drag to Rotate • Pinch to Zoom
+    <div id="example-scanning-overlay">
+      <p>Scan the flyer to see the wristband...</p>
     </div>
 
     <a-scene 
-      /* 1. STABILITY FIX: filterMinCF and filterBeta reduce the shaking/jitter */
-      mindar-image="imageTargetSrc: ./targets.mind; filterMinCF:0.0001; filterBeta: 0.001;" 
-      embedded
+      mindar-image="imageTargetSrc: ./targets.mind; uiScanning: #example-scanning-overlay;" 
       color-space="sRGB" 
       renderer="colorManagement: true, physicallyCorrectLights" 
       vr-mode-ui="enabled: false" 
       device-orientation-permission-ui="enabled: false"
-      gesture-detector>
+      gesture-detector
+      raycaster="objects: .clickable">
       
       <a-assets>
         <a-asset-item id="wristbandModel" src="./wristband.glb"></a-asset-item>
@@ -55,20 +41,20 @@
       </a-camera>
 
       <a-entity mindar-image-target="targetIndex: 0">
-        <a-entity 
-          class="clickable" 
-          gesture-handler="rotationFactor: 1; minScale: 0.01; maxScale: 2;"
-          position="0 0 0.2"
-          rotation="90 0 0">
+        <a-gltf-model 
+          src="#wristbandModel" 
+          class="clickable"
+          gesture-handler="rotationFactor: 1.5"
           
-          <a-gltf-model 
-            src="#wristbandModel" 
-            /* Smaller scale based on your previous 'too big' result */
-            scale="0.05 0.05 0.05"
-            rotation="0 0 0">
-          </a-gltf-model>
+          /* 1. SMALLER SCALE: Adjusted from 0.5 to 0.2 */
+          scale="0.2 0.2 0.2" 
           
-        </a-entity>
+          /* 2. FLOATING DISTANCE: The 'z' value (third number) moves it away from the flyer */
+          /* Increase 0.3 to 0.5 if you want it to float even further away */
+          position="0 0 0.5" 
+          
+          rotation="45 45 90">
+        </a-gltf-model>
       </a-entity>
     </a-scene>
   </body>
