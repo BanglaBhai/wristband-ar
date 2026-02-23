@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Wristband WebAR</title>
+    <title>Wristband WebAR - Zoom & Rotate</title>
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
     <script src="https://raw.githack.com/fcor/arjs-gestures/master/dist/gestures.js"></script>
@@ -20,7 +20,7 @@
 
   <body>
     <div id="example-scanning-overlay">
-      <p>Scan the flyer to see the wristband...!</p>
+      <p>Scan the flyer... Use 1 finger to Rotate, 2 to Zoom</p>
     </div>
 
     <a-scene 
@@ -29,22 +29,26 @@
       renderer="colorManagement: true, physicallyCorrectLights" 
       vr-mode-ui="enabled: false" 
       device-orientation-permission-ui="enabled: false"
-      gesture-detector>
+      gesture-detector
+      raycaster="objects: .clickable">
       
       <a-assets>
         <a-asset-item id="wristbandModel" src="./wristband.glb"></a-asset-item>
       </a-assets>
 
-      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+      <a-camera position="0 0 0" look-controls="enabled: false">
+        <a-entity cursor="fuse: false; rayOrigin: mouse;" raycaster="objects: .clickable"></a-entity>
+      </a-camera>
 
       <a-entity mindar-image-target="targetIndex: 0">
         <a-gltf-model 
           src="#wristbandModel" 
-          position="0 0 0" 
-          scale="0.5 0.5 0.5" 
-          rotation="0 0 0"
           class="clickable"
-          gesture-handler="rotationFactor: 1">
+          /* Added minScale and maxScale to prevent the model from disappearing or getting too huge */
+          gesture-handler="rotationFactor: 1.5; minScale: 0.05; maxScale: 1;"
+          scale="0.15 0.15 0.15" 
+          position="0 0 0.4" 
+          rotation="0 0 0">
         </a-gltf-model>
       </a-entity>
     </a-scene>
