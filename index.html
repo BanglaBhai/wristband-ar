@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Wristband WebAR</title>
-    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Wristband WebAR - Zoom & Rotate</title>
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+    <script src="https://raw.githack.com/fcor/arjs-gestures/master/dist/gestures.js"></script>
     
-    <style>   
+    <style>
       #example-scanning-overlay {
         display: flex; align-items: center; justify-content: center;
         position: absolute; left: 0; right: 0; top: 0; bottom: 0;
@@ -19,35 +20,37 @@
 
   <body>
     <div id="example-scanning-overlay">
-      <p>Scan the flyer to see the wristband...!</p>
+      <p>Scan the flyer...!</p>
     </div>
 
     <a-scene 
-      /* STABILITY FIX: filterMinCF and filterBeta stop the 'shaking' */
       mindar-image="imageTargetSrc: ./targets.mind; filterMinCF:0.0001; filterBeta: 0.001; uiScanning: #example-scanning-overlay;" 
       color-space="sRGB" 
       renderer="colorManagement: true, physicallyCorrectLights" 
       vr-mode-ui="enabled: false" 
-      device-orientation-permission-ui="enabled: false">
+      device-orientation-permission-ui="enabled: false"
+      gesture-detector
+      raycaster="objects: .clickable">
       
       <a-assets>
         <a-asset-item id="wristbandModel" src="./wristband.glb"></a-asset-item>
       </a-assets>
 
-      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+      <a-camera position="0 0 0" look-controls="enabled: false">
+        <a-entity cursor="fuse: false; rayOrigin: mouse;" raycaster="objects: .clickable"></a-entity>
+      </a-camera>
 
       <a-entity mindar-image-target="targetIndex: 0">
         <a-gltf-model 
           src="#wristbandModel" 
-          /* SCALE: Reduced to 0.06 to fit the screen better */
-          scale="0.06 0.06 0.06" 
-          /* POSITION: 0.1 keeps it close to the paper for better tracking */
-          position="0 0 0.1" 
-          /* ROTATION: 90 180 0 faces the logo/QR toward the camera */
+          class="clickable"
+          /* Added minScale and maxScale to prevent the model from disappearing or getting too huge */
+          gesture-handler="rotationFactor: 1.5; minScale: 0.05; maxScale: 1;"
+          scale="0.15 0.15 0.15" 
+          position="0 0 0.4" 
           rotation="90 180 0">
         </a-gltf-model>
       </a-entity>
     </a-scene>
   </body>
 </html>
-
