@@ -1,20 +1,33 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Talash Wristband WebAR</title>
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
-    <script src="https://raw.githack.com/fcor/arjs-gestures/master/dist/gestures.js"></script>
     
     <style>
+      body { margin: 0; overflow: hidden; }
+      .a-canvas { width: 100% !important; height: 100% !important; }
+
       #example-scanning-overlay {
         display: flex; align-items: center; justify-content: center;
         position: absolute; left: 0; right: 0; top: 0; bottom: 0;
         background: rgba(0, 0, 0, 0.5); color: white; z-index: 2;
         font-family: sans-serif;
       }
-      #example-scanning-overlay.hidden { display: none; }
+
+      /* COLOR SWITCHER UI */
+      #ui-container {
+        position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+        display: flex; gap: 20px; z-index: 10;
+      }
+      .color-btn {
+        width: 50px; height: 50px; border-radius: 50%; border: 3px solid white;
+        cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      }
+      #btn-white { background-color: #ffffff; }
+      #btn-colored { background-color: #ff4081; /* Change to match your 2nd model color */ }
     </style>
   </head>
 
@@ -23,40 +36,53 @@
       <p>Scan the flyer...!</p>
     </div>
 
+    <div id="ui-container">
+      <div id="btn-white" class="color-btn" onclick="switchModel('white')"></div>
+      <div id="btn-colored" class="color-btn" onclick="switchModel('colored')"></div>
+    </div>
+
     <a-scene 
       mindar-image="imageTargetSrc: ./targets.mind; filterMinCF:0.0001; filterBeta: 0.001; uiScanning: #example-scanning-overlay;" 
       color-space="sRGB" 
       renderer="colorManagement: true, physicallyCorrectLights" 
       vr-mode-ui="enabled: false" 
-      device-orientation-permission-ui="enabled: false"
-      gesture-detector
-      raycaster="objects: .clickable">
+      device-orientation-permission-ui="enabled: false">
       
       <a-assets>
-        <a-asset-item id="wristbandModel" src="./wristband.glb"></a-asset-item>
+        <a-asset-item id="model1" src="./wristband.glb"></a-asset-item>
+        <a-asset-item id="model2" src="./wristband_alt.glb"></a-asset-item>
       </a-assets>
 
-      <a-camera position="0 0 0" look-controls="enabled: false">
-        <a-entity cursor="fuse: false; rayOrigin: mouse;" raycaster="objects: .clickable"></a-entity>
-      </a-camera>
+      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
       <a-entity mindar-image-target="targetIndex: 0">
-        <a-gltf-model 
-          src="#wristbandModel" 
-          class="clickable"
-          /* Added minScale and maxScale to prevent the model from disappearing or getting too huge */
-          gesture-handler="rotationFactor: 1.5; minScale: 0.05; maxScale: 1;"
-          scale="0.15 0.15 0.15" 
-          position="0 0 0.4" 
-          rotation="45 180 180">
-        </a-gltf-model>
+        <a-entity id="container1" rotation="45 180 180" position="0 0 0.4"
+          animation="property: rotation; to: 45 540 180; dur: 8000; easing: linear; loop: true">
+          <a-gltf-model id="view1" src="#model1" scale="0.12 0.12 0.12"></a-gltf-model>
+        </a-entity>
+      </a-entity>
+
+      <a-entity mindar-image-target="targetIndex: 1">
+        <a-entity id="container2" rotation="45 180 180" position="0 0 0.4"
+          animation="property: rotation; to: 45 540 180; dur: 8000; easing: linear; loop: true">
+          <a-gltf-model id="view2" src="#model1" scale="0.12 0.12 0.12"></a-gltf-model>
+        </a-entity>
       </a-entity>
     </a-scene>
+
+    <script>
+      function switchModel(color) {
+        const m1 = document.querySelector('#view1');
+        const m2 = document.querySelector('#view2');
+        
+        if (color === 'white') {
+          m1.setAttribute('src', '#model1');
+          m2.setAttribute('src', '#model1');
+        } else {
+          m1.setAttribute('src', '#model2');
+          m2.setAttribute('src', '#model2');
+        }
+      }
+    </script>
   </body>
 </html>
-
-
-
-
-
-
