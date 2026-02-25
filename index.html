@@ -26,8 +26,8 @@
         width: 60px; height: 60px; border-radius: 50%; border: 4px solid white;
         cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.5);
       }
-      #btn-white { background-color: #ffffff; }
       #btn-pink { background-color: #ff4081; }
+      #btn-white { background-color: #ffffff; }
     </style>
   </head>
 
@@ -37,8 +37,8 @@
     </div>
 
     <div id="ui-container">
-      <div id="btn-white" class="color-btn" onclick="switchModel('white')"></div>
       <div id="btn-pink" class="color-btn" onclick="switchModel('pink')"></div>
+      <div id="btn-white" class="color-btn" onclick="switchModel('white')"></div>
     </div>
 
     <a-scene 
@@ -49,8 +49,8 @@
       device-orientation-permission-ui="enabled: false">
       
       <a-assets>
-        <a-asset-item id="white-asset" src="./wristband.glb"></a-asset-item>
         <a-asset-item id="pink-asset" src="./wristband_alt.glb"></a-asset-item>
+        <a-asset-item id="white-asset" src="./wristband.glb"></a-asset-item>
       </a-assets>
 
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
@@ -109,6 +109,7 @@
     </script>
   </body>
 </html>
+
 
 
 
