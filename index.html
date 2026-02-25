@@ -59,21 +59,21 @@
       <a-light type="directional" position="1 2 1" intensity="0.7"></a-light>
 
       <a-entity mindar-image-target="targetIndex: 0" class="target-anchor">
-        <a-entity class="showroom-wrapper" position="0 0 0.3" rotation="90 0 0"
-                  animation="property: rotation; from: 90 0 0; to: 90 360 0; dur: 5000; easing: linear; loop: true">
+        <a-entity class="showroom-wrapper" position="0 0 0.3" rotation="90 360 0"
+                  animation="property: rotation; from: 90 360 0; to: 90 0 0; dur: 8000; easing: linear; loop: true">
           
-          <a-gltf-model class="white-model" src="#white-asset" scale="0.1 0.1 0.1" visible="true"></a-gltf-model>
-          <a-gltf-model class="pink-model" src="#pink-asset" scale="0.1 0.1 0.1" visible="false"></a-gltf-model>
+          <a-gltf-model class="pink-model" src="#pink-asset" scale="0.1 0.1 0.1" visible="true"></a-gltf-model>
+          <a-gltf-model class="white-model" src="#white-asset" scale="0.1 0.1 0.1" visible="false"></a-gltf-model>
           
         </a-entity>
       </a-entity>
 
       <a-entity mindar-image-target="targetIndex: 1" class="target-anchor">
-        <a-entity class="showroom-wrapper" position="0 0 0.3" rotation="90 0 0"
-                  animation="property: rotation; from: 90 0 0; to: 90 360 0; dur: 5000; easing: linear; loop: true">
+        <a-entity class="showroom-wrapper" position="0 0 0.3" rotation="90 360 0"
+                  animation="property: rotation; from: 90 360 0; to: 90 0 0; dur: 8000; easing: linear; loop: true">
           
-          <a-gltf-model class="white-model" src="#white-asset" scale="0.1 0.1 0.1" visible="true"></a-gltf-model>
-          <a-gltf-model class="pink-model" src="#pink-asset" scale="0.1 0.1 0.1" visible="false"></a-gltf-model>
+          <a-gltf-model class="pink-model" src="#pink-asset" scale="0.1 0.1 0.1" visible="true"></a-gltf-model>
+          <a-gltf-model class="white-model" src="#white-asset" scale="0.1 0.1 0.1" visible="false"></a-gltf-model>
           
         </a-entity>
       </a-entity>
@@ -95,20 +95,21 @@
 
       // BUTTON FIX: Toggle visibility instead of changing SRC
       function switchModel(color) {
-        const whiteModels = document.querySelectorAll('.white-model');
         const pinkModels = document.querySelectorAll('.pink-model');
+        const whiteModels = document.querySelectorAll('.white-model');
         
-        if (color === 'white') {
-          whiteModels.forEach(m => m.setAttribute('visible', 'true'));
-          pinkModels.forEach(m => m.setAttribute('visible', 'false'));
-        } else {
-          whiteModels.forEach(m => m.setAttribute('visible', 'false'));
+        if (color === 'pink') {
           pinkModels.forEach(m => m.setAttribute('visible', 'true'));
+          whiteModels.forEach(m => m.setAttribute('visible', 'false'));
+        } else {
+          pinkModels.forEach(m => m.setAttribute('visible', 'false'));
+          whiteModels.forEach(m => m.setAttribute('visible', 'true'));
         }
       }
     </script>
   </body>
 </html>
+
 
 
 
