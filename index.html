@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Talash Wristband Final Fix</title>
+    <title>Talash Wristband - Final Polish</title>
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
     
@@ -13,18 +13,18 @@
       #example-scanning-overlay {
         position: absolute; left: 0; right: 0; top: 0; bottom: 0;
         display: flex; align-items: center; justify-content: center;
-        background: rgba(0, 0, 0, 0.5); color: white; z-index: 2;
+        background: rgba(0, 0, 0, 0.6); color: white; z-index: 2;
         font-family: sans-serif; transition: opacity 0.5s;
       }
       #example-scanning-overlay.hidden { opacity: 0; pointer-events: none; }
 
       #ui-container {
-        position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
-        display: flex; gap: 20px; z-index: 10;
+        position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+        display: flex; gap: 30px; z-index: 10;
       }
       .color-btn {
-        width: 55px; height: 55px; border-radius: 50%; border: 3px solid white;
-        cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        width: 60px; height: 60px; border-radius: 50%; border: 4px solid white;
+        cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.5);
       }
       #btn-white { background-color: #ffffff; }
       #btn-pink { background-color: #ff4081; }
@@ -44,7 +44,7 @@
     <a-scene 
       mindar-image="imageTargetSrc: ./targets.mind; filterMinCF:0.0001; filterBeta: 0.001; uiScanning: no;" 
       color-space="sRGB" 
-      renderer="colorManagement: true, physicallyCorrectLights: true" 
+      renderer="colorManagement: true, physicallyCorrectLights: false" 
       vr-mode-ui="enabled: false" 
       device-orientation-permission-ui="enabled: false">
       
@@ -55,19 +55,20 @@
 
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-      <a-light type="ambient" intensity="1.5"></a-light>
-      <a-light type="directional" position="0 10 10" intensity="1"></a-light>
+      <a-light type="ambient" intensity="2.5"></a-light>
+      <a-light type="directional" position="1 1 1" intensity="1.5"></a-light>
+      <a-light type="point" position="0 0 0.5" intensity="1" distance="2"></a-light>
 
-      <a-entity id="target0" mindar-image-target="targetIndex: 0">
-        <a-entity class="model-wrapper" rotation="0 0 0" position="0 0 0" scale="0.001 0.001 0.001"
-                  animation="property: rotation; to: 0 540 180; dur: 5000; easing: linear; loop: true">
+      <a-entity mindar-image-target="targetIndex: 0" class="target-node">
+        <a-entity class="model-wrapper" rotation="45 180 180" position="0 0 0" scale="0.001 0.001 0.001"
+                  animation="property: rotation; to: 45 540 180; dur: 8000; easing: linear; loop: true">
           <a-gltf-model class="main-model" src="#model-white" scale="0.12 0.12 0.12"></a-gltf-model>
         </a-entity>
       </a-entity>
 
-      <a-entity id="target1" mindar-image-target="targetIndex: 0">
-        <a-entity class="model-wrapper" rotation="0 0 0" position="0 0 0" scale="0.001 0.001 0.001"
-                  animation="property: rotation; to: 0 540 180; dur: 5000; easing: linear; loop: true">
+      <a-entity mindar-image-target="targetIndex: 1" class="target-node">
+        <a-entity class="model-wrapper" rotation="45 180 180" position="0 0 0" scale="0.001 0.001 0.001"
+                  animation="property: rotation; to: 45 540 180; dur: 5000; easing: linear; loop: true">
           <a-gltf-model class="main-model" src="#model-white" scale="0.12 0.12 0.12"></a-gltf-model>
         </a-entity>
       </a-entity>
@@ -75,24 +76,30 @@
 
     <script>
       const overlay = document.querySelector('#example-scanning-overlay');
-      
-      // Detect when targets are found
-      document.querySelectorAll('[mindar-image-target]').forEach(target => {
+      const targetNodes = document.querySelectorAll('.target-node');
+
+      // Detect Found/Lost for all targets
+      targetNodes.forEach(target => {
         target.addEventListener("targetFound", () => {
           overlay.classList.add('hidden');
           const wrapper = target.querySelector('.model-wrapper');
           wrapper.setAttribute('animation__spawn_pos', 'property: position; to: 0 0 0.4; dur: 1000; easing: easeOutElastic');
           wrapper.setAttribute('animation__spawn_scale', 'property: scale; to: 1 1 1; dur: 1000; easing: easeOutElastic');
         });
+
         target.addEventListener("targetLost", () => {
           overlay.classList.remove('hidden');
         });
       });
 
+      // FIX 2: Correct Model Switching Logic
       function switchModel(color) {
         const models = document.querySelectorAll('.main-model');
-        const newSrc = (color === 'white') ? '#model-white' : '#model-pink';
-        models.forEach(m => m.setAttribute('src', newSrc));
+        const assetId = (color === 'white') ? '#model-white' : '#model-pink';
+        
+        models.forEach(model => {
+          model.setAttribute('src', assetId);
+        });
       }
     </script>
   </body>
