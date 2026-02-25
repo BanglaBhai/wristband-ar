@@ -2,9 +2,9 @@
 <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Talash Wristband - Final Polish</title>
-    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+    <title>Talash Showroom AR</title>
+    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
     
     <style>
       body { margin: 0; overflow: hidden; }
@@ -13,7 +13,7 @@
       #example-scanning-overlay {
         position: absolute; left: 0; right: 0; top: 0; bottom: 0;
         display: flex; align-items: center; justify-content: center;
-        background: rgba(0, 0, 0, 0.6); color: white; z-index: 2;
+        background: rgba(0, 0, 0, 0.7); color: white; z-index: 2;
         font-family: sans-serif; transition: opacity 0.5s;
       }
       #example-scanning-overlay.hidden { opacity: 0; pointer-events: none; }
@@ -49,57 +49,62 @@
       device-orientation-permission-ui="enabled: false">
       
       <a-assets>
-        <a-asset-item id="model-white" src="./wristband.glb"></a-asset-item>
-        <a-asset-item id="model-pink" src="./wristband_alt.glb"></a-asset-item>
+        <a-asset-item id="white-asset" src="./wristband.glb"></a-asset-item>
+        <a-asset-item id="pink-asset" src="./wristband_alt.glb"></a-asset-item>
       </a-assets>
 
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-      <a-light type="ambient" intensity="2.5"></a-light>
-      <a-light type="directional" position="1 1 1" intensity="1.5"></a-light>
-      <a-light type="point" position="0 0 0.5" intensity="1" distance="2"></a-light>
+      <a-light type="ambient" intensity="1.8"></a-light>
+      <a-light type="directional" position="1 2 1" intensity="1"></a-light>
 
-      <a-entity mindar-image-target="targetIndex: 0" class="target-node">
-        <a-entity class="model-wrapper" rotation="45 180 180" position="0 0 0" scale="0.001 0.001 0.001"
-                  animation="property: rotation; to: 45 540 180; dur: 8000; easing: linear; loop: true">
-          <a-gltf-model class="main-model" src="#model-white" scale="0.12 0.12 0.12"></a-gltf-model>
+      <a-entity mindar-image-target="targetIndex: 0" class="target-anchor">
+        <a-entity class="showroom-wrapper" position="0 0 0.3" 
+                  animation="property: rotation; to: 0 360 0; dur: 8000; easing: linear; loop: true">
+          
+          <a-gltf-model class="white-model" src="#white-asset" scale="0.1 0.1 0.1" visible="true"></a-gltf-model>
+          <a-gltf-model class="pink-model" src="#pink-asset" scale="0.1 0.1 0.1" visible="false"></a-gltf-model>
+          
         </a-entity>
       </a-entity>
 
-      <a-entity mindar-image-target="targetIndex: 1" class="target-node">
-        <a-entity class="model-wrapper" rotation="45 180 180" position="0 0 0" scale="0.001 0.001 0.001"
-                  animation="property: rotation; to: 45 540 180; dur: 5000; easing: linear; loop: true">
-          <a-gltf-model class="main-model" src="#model-white" scale="0.12 0.12 0.12"></a-gltf-model>
+      <a-entity mindar-image-target="targetIndex: 1" class="target-anchor">
+        <a-entity class="showroom-wrapper" position="0 0 0.3" 
+                  animation="property: rotation; to: 0 360 0; dur: 8000; easing: linear; loop: true">
+          
+          <a-gltf-model class="white-model" src="#white-asset" scale="0.1 0.1 0.1" visible="true"></a-gltf-model>
+          <a-gltf-model class="pink-model" src="#pink-asset" scale="0.1 0.1 0.1" visible="false"></a-gltf-model>
+          
         </a-entity>
       </a-entity>
     </a-scene>
 
     <script>
       const overlay = document.querySelector('#example-scanning-overlay');
-      const targetNodes = document.querySelectorAll('.target-node');
+      const anchors = document.querySelectorAll('.target-anchor');
 
-      // Detect Found/Lost for all targets
-      targetNodes.forEach(target => {
-        target.addEventListener("targetFound", () => {
+      // Detect Found/Lost
+      anchors.forEach(anchor => {
+        anchor.addEventListener("targetFound", () => {
           overlay.classList.add('hidden');
-          const wrapper = target.querySelector('.model-wrapper');
-          wrapper.setAttribute('animation__spawn_pos', 'property: position; to: 0 0 0.4; dur: 1000; easing: easeOutElastic');
-          wrapper.setAttribute('animation__spawn_scale', 'property: scale; to: 1 1 1; dur: 1000; easing: easeOutElastic');
         });
-
-        target.addEventListener("targetLost", () => {
+        anchor.addEventListener("targetLost", () => {
           overlay.classList.remove('hidden');
         });
       });
 
-      // FIX 2: Correct Model Switching Logic
+      // BUTTON FIX: Toggle visibility instead of changing SRC
       function switchModel(color) {
-        const models = document.querySelectorAll('.main-model');
-        const assetId = (color === 'white') ? '#model-white' : '#model-pink';
+        const whiteModels = document.querySelectorAll('.white-model');
+        const pinkModels = document.querySelectorAll('.pink-model');
         
-        models.forEach(model => {
-          model.setAttribute('src', assetId);
-        });
+        if (color === 'white') {
+          whiteModels.forEach(m => m.setAttribute('visible', 'true'));
+          pinkModels.forEach(m => m.setAttribute('visible', 'false'));
+        } else {
+          whiteModels.forEach(m => m.setAttribute('visible', 'false'));
+          pinkModels.forEach(m => m.setAttribute('visible', 'true'));
+        }
       }
     </script>
   </body>
