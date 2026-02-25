@@ -28,6 +28,7 @@
       }
       #btn-pink { background-color: #ff4081; }
       #btn-white { background-color: #ffffff; }
+      #btn-black { background-color: #000000; }
     </style>
   </head>
 
@@ -39,6 +40,7 @@
     <div id="ui-container">
       <div id="btn-pink" class="color-btn" onclick="switchModel('pink')"></div>
       <div id="btn-white" class="color-btn" onclick="switchModel('white')"></div>
+      <div id="btn-black" class="color-btn" onclick="switchModel('black')"></div>
     </div>
 
     <a-scene 
@@ -51,6 +53,7 @@
       <a-assets>
         <a-asset-item id="pink-asset" src="./wristband_alt.glb"></a-asset-item>
         <a-asset-item id="white-asset" src="./wristband.glb"></a-asset-item>
+        <a-asset-item id="black-asset" src="./wristband_blk.glb"></a-asset-item>
       </a-assets>
 
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
@@ -59,21 +62,34 @@
       <a-light type="directional" position="1 2 1" intensity="0.7"></a-light>
 
       <a-entity mindar-image-target="targetIndex: 0" class="target-anchor">
-        <a-entity class="showroom-wrapper" position="0 0 0.3" rotation="90 360 0"
-                  animation="property: rotation; from: 90 360 0; to: 90 0 0; dur: 8000; easing: linear; loop: true">
+        <a-entity class="showroom-wrapper" position="0 0 0.3" rotation="90 0 360"
+                  animation="property: rotation; from: 90 0 360; to: 90 0 0; dur: 8000; easing: linear; loop: true">
           
           <a-gltf-model class="pink-model" src="#pink-asset" scale="0.1 0.1 0.1" visible="true"></a-gltf-model>
           <a-gltf-model class="white-model" src="#white-asset" scale="0.1 0.1 0.1" visible="false"></a-gltf-model>
+          <a-gltf-model class="black-model" src="#black-asset" scale="0.1 0.1 0.1" visible="false"></a-gltf-model>
           
         </a-entity>
       </a-entity>
 
       <a-entity mindar-image-target="targetIndex: 1" class="target-anchor">
-        <a-entity class="showroom-wrapper" position="0 0 0.3" rotation="90 360 0"
-                  animation="property: rotation; from: 90 360 0; to: 90 0 0; dur: 8000; easing: linear; loop: true">
+        <a-entity class="showroom-wrapper" position="0 0 0.3" rotation="90 0 360"
+                  animation="property: rotation; from: 90 0 360; to: 90 0 0; dur: 8000; easing: linear; loop: true">
           
           <a-gltf-model class="pink-model" src="#pink-asset" scale="0.1 0.1 0.1" visible="true"></a-gltf-model>
           <a-gltf-model class="white-model" src="#white-asset" scale="0.1 0.1 0.1" visible="false"></a-gltf-model>
+          <a-gltf-model class="black-model" src="#black-asset" scale="0.1 0.1 0.1" visible="false"></a-gltf-model>
+          
+        </a-entity>
+      </a-entity>
+
+      <a-entity mindar-image-target="targetIndex: 2" class="target-anchor">
+        <a-entity class="showroom-wrapper" position="0 0 0.3" rotation="90 0 360"
+                  animation="property: rotation; from: 90 0 360; to: 90 0 0; dur: 8000; easing: linear; loop: true">
+          
+          <a-gltf-model class="pink-model" src="#pink-asset" scale="0.1 0.1 0.1" visible="true"></a-gltf-model>
+          <a-gltf-model class="white-model" src="#white-asset" scale="0.1 0.1 0.1" visible="false"></a-gltf-model>
+          <a-gltf-model class="black-model" src="#black-asset" scale="0.1 0.1 0.1" visible="false"></a-gltf-model>
           
         </a-entity>
       </a-entity>
@@ -97,18 +113,26 @@
       function switchModel(color) {
         const pinkModels = document.querySelectorAll('.pink-model');
         const whiteModels = document.querySelectorAll('.white-model');
+        const blackModels = document.querySelectorAll('.black-model');
         
         if (color === 'pink') {
           pinkModels.forEach(m => m.setAttribute('visible', 'true'));
           whiteModels.forEach(m => m.setAttribute('visible', 'false'));
-        } else {
+          blackModels.forEach(m => m.setAttribute('visible', 'false'));
+        } else if (color === 'white') {
           pinkModels.forEach(m => m.setAttribute('visible', 'false'));
           whiteModels.forEach(m => m.setAttribute('visible', 'true'));
+          blackModels.forEach(m => m.setAttribute('visible', 'false'));
+        } else {
+          pinkModels.forEach(m => m.setAttribute('visible', 'false'));
+          whiteModels.forEach(m => m.setAttribute('visible', 'false'));
+          blackModels.forEach(m => m.setAttribute('visible', 'true'));
         }
       }
     </script>
   </body>
 </html>
+
 
 
 
